@@ -1,24 +1,45 @@
 <script lang="ts">
 import axios from 'axios';
-export default {
-  name: 'App',
-  methods: {
-    getFoxImage(){
-     axios.get('https://some-random-api.ml/docs/endpoints/animal#fox')
-    }
+
+class FoxResponse {
+  constructor(
+      readonly image: string,
+      readonly fact: string,
+  ) {
   }
 }
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      response: FoxResponse,
+    };
+  },
+  async created() {
+    try {
+      const res = await axios.get<FoxResponse>(`https://some-random-api.ml/animal/fox`);
+      this.response = res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+}
+
 </script>
 
 <template>
   <header>
   </header>
-  <image/>
-  <RouterView />
+  <img :src="response.image" alt="fox" />
+  <div>{{ response.fact }}</div>
+<!--  <RouterView />-->
 </template>
 
 <style>
+
 @import "@/assets/base.css";
+
 
 #app {
   max-width: 1280px;
