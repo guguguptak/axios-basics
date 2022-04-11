@@ -17,23 +17,33 @@ export default {
     };
   },
   async created() {
-    try {
-      const res = await axios.get<FoxResponse>(`https://some-random-api.ml/animal/fox`);
-      this.response = res.data;
-    } catch (error) {
-      console.log(error);
-    }
+    this.fetchFox();
   },
+  methods: {
+    async fetchFox() {
+      try {
+        const res = await axios.get<FoxResponse>(`https://some-random-api.ml/animal/fox`);
+        this.response = res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 }
-
 </script>
 
 <template>
   <header>
   </header>
-  <img :src="response.image" alt="fox" />
-  <div>{{ response.fact }}</div>
-<!--  <RouterView />-->
+  <div>
+    <img :src="response.image" alt="fox" />
+    <div>{{ response.fact }}</div>
+  </div>
+  <div>
+    <button class="button" @click="fetchFox">FOX</button>
+  </div>
+
+  <!--  <RouterView />-->
 </template>
 
 <style>
@@ -133,5 +143,10 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+.button {
+  position: absolute;
+  padding: 0.5rem;
 }
 </style>
