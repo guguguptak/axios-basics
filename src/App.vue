@@ -1,7 +1,7 @@
 <script lang="ts">
 import axios from 'axios';
 
-class FoxResponse {
+class PetResponse {
   constructor(
       readonly image: string,
       readonly fact: string,
@@ -9,20 +9,30 @@ class FoxResponse {
   }
 }
 
+const PET_ENDPOINTS = {
+  'fox': `https://some-random-api.ml/animal/fox`,
+  'racoon': `https://some-random-api.ml/animal/raccoon`,
+  'cat': `https://some-random-api.ml/animal/cat`
+}
+
 export default {
   name: 'App',
+  async created() {
+    this.fetchPet();
+  },
   data() {
     return {
-      response: FoxResponse,
+      response: PetResponse,
+      petType: 0,
     };
   },
-  async created() {
-    this.fetchFox();
+  computed: {
+    PET_ENDPOINTS: () => PET_ENDPOINTS,
   },
   methods: {
-    async fetchFox() {
+    async fetchPet() {
       try {
-        const res = await axios.get<FoxResponse>(`https://some-random-api.ml/animal/fox`);
+        const res = await axios.get<PetResponse>(Object.values(PET_ENDPOINTS)[this.petType]);
         this.response = res.data;
       } catch (error) {
         console.log(error);
@@ -36,11 +46,18 @@ export default {
   <header>
   </header>
   <div>
+    <div>Selected: {{ petType }}</div>
+    <select v-model="petType" @change="fetchPet">
+      <!--      <option disabled value="">Please select one</option>-->
+      <option v-for="(_, petName, i) in PET_ENDPOINTS" :key="i" :value="i">
+        {{ petName }}
+      </option>
+    </select>
     <img :src="response.image" alt="fox" />
     <div>{{ response.fact }}</div>
   </div>
   <div>
-    <button class="button" @click="fetchFox">FOX</button>
+    <button class="button" @click="fetchPet">Another PET</button>
   </div>
 
   <!--  <RouterView />-->
