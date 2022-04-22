@@ -45,20 +45,20 @@ export default {
 <template>
   <header>
   </header>
-  <div>
-    <div>Selected: {{ petType }}</div>
-    <select v-model="petType" @change="fetchPet">
+  <div id="img-cont">
+    <img id="pet-img" :src="response.image" alt="fox" />
+  </div>
+  <div>Selected: {{ petType }}</div>
+  <div id="select-box">
+    <select id="pet-select" v-model="petType" class="select is-normal" @change="fetchPet">
       <!--      <option disabled value="">Please select one</option>-->
       <option v-for="(_, petName, i) in PET_ENDPOINTS" :key="i" :value="i">
         {{ petName }}
       </option>
     </select>
-    <img :src="response.image" alt="fox" />
-    <div>{{ response.fact }}</div>
+    <button id="pet-button" class="button is-primary" @click="fetchPet">Another pet</button>
   </div>
-  <div>
-    <button class="button" @click="fetchPet">Another PET</button>
-  </div>
+  <div id="pet-info-box">{{ response.fact }}</div>
 
   <!--  <RouterView />-->
 </template>
@@ -67,12 +67,10 @@ export default {
 
 @import "@/assets/base.css";
 
-
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-
   font-weight: normal;
 }
 
@@ -127,13 +125,14 @@ nav a:first-of-type {
 @media (min-width: 1024px) {
   body {
     display: flex;
-    place-items: center;
+    flex-wrap: nowrap;
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    /*display: flex;*/
+    /*display: grid;*/
+    /*!*grid-template-columns: 1fr 1fr;*!*/
+    /*!*padding: 0 2rem;*!*/
   }
 
   header {
@@ -162,8 +161,33 @@ nav a:first-of-type {
   }
 }
 
-.button {
+#select-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+#pet-info-box {
   position: absolute;
-  padding: 0.5rem;
+}
+
+#img-cont {
+  width: 600px;
+  height: 480px;
+  display: flex;
+  justify-content: center;
+}
+
+#pet-img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+#pet-button {
+
+}
+
+#pet-select {
+
 }
 </style>
