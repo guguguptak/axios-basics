@@ -1,3 +1,33 @@
+<template>
+  <main>
+    <div class="animal">
+      <header>
+        Random Animal Frontend
+      </header>
+      <div class="img-container">
+        <img :alt="pet1?.name" :class="pet1?.isCurrent ? 'pet-curr' : ''" :src="pet1?.response?.image"
+             class="pet pet-img" />
+        <img :alt="pet2?.name" :class="pet2?.isCurrent ? 'pet-curr' : ''" :src="pet2?.response?.image"
+             class="pet pet-img" />
+      </div>
+      <p class="pet-info-box">
+        <span>{{ pet1?.response?.fact }}</span>
+        <span>{{ pet2?.response?.fact }}</span>
+      </p>
+      <div class="pet-action-box">
+        <select v-model="petType" class="pet-select select is-normal" @change="fetchPet">
+          <!--      <option disabled value="">Please select one</option>-->
+          <option v-for="(_, name, i) in PET_ENDPOINTS" :key="i" :value="i">
+            {{ name }}
+          </option>
+        </select>
+        <button class="pet-button button is-primary" @click="fetchPet">Another pet</button>
+      </div>
+    </div>
+  </main>
+  <!--  <RouterView />-->
+</template>
+
 <script lang="ts">
 import axios from 'axios';
 
@@ -5,6 +35,15 @@ class PetResponse {
   constructor(
       readonly image: string,
       readonly fact: string,
+  ) {
+  }
+}
+
+class Pet {
+  constructor(
+      readonly response: PetResponse,
+      readonly name: string,
+      public isCurrent: boolean,
   ) {
   }
 }
@@ -22,18 +61,36 @@ export default {
   },
   data() {
     return {
-      response: PetResponse,
+      pet1: Pet,
+      pet2: Pet,
+      currPetIndex: 1,
       petType: 0,
     };
   },
   computed: {
     PET_ENDPOINTS: () => PET_ENDPOINTS,
+    currentPetName(): string {
+      return Object.keys(PET_ENDPOINTS)[this.petType];
+    },
   },
   methods: {
     async fetchPet() {
       try {
-        const res = await axios.get<PetResponse>(Object.values(PET_ENDPOINTS)[this.petType]);
-        this.response = res.data;
+        const currImageUrl = (this.currPetIndex == 1) ? this.pet1?.response?.image : this.pet2?.response?.image;
+        var resp;
+        do {
+          resp = await axios.get<PetResponse>(Object.values(PET_ENDPOINTS)[this.petType]);
+        } while (resp.data.image == currImageUrl);
+        const newPet = new Pet(resp.data, this.currentPetName, true);
+        if (this.currPetIndex == 1) {
+          this.currPetIndex = 2;
+          this.pet2 = newPet;
+          this.pet1.isCurrent = false;
+        } else {
+          this.currPetIndex = 1;
+          this.pet1 = newPet;
+          this.pet2.isCurrent = false;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -42,29 +99,7 @@ export default {
 }
 </script>
 
-<template>
-  <header>
-  </header>
-  <div id="img-cont">
-    <img id="pet-img" :src="response.image" alt="fox" />
-  </div>
-  <div>Selected: {{ petType }}</div>
-  <div id="select-box">
-    <select id="pet-select" v-model="petType" class="select is-normal" @change="fetchPet">
-      <!--      <option disabled value="">Please select one</option>-->
-      <option v-for="(_, petName, i) in PET_ENDPOINTS" :key="i" :value="i">
-        {{ petName }}
-      </option>
-    </select>
-    <button id="pet-button" class="button is-primary" @click="fetchPet">Another pet</button>
-  </div>
-  <div id="pet-info-box">{{ response.fact }}</div>
-
-  <!--  <RouterView />-->
-</template>
-
 <style>
-
 @import "@/assets/base.css";
 
 #app {
@@ -77,6 +112,7 @@ export default {
 header {
   line-height: 1.5;
   max-height: 100vh;
+  font-size: 2rem;
 }
 
 .logo {
@@ -125,28 +161,23 @@ nav a:first-of-type {
 @media (min-width: 1024px) {
   body {
     display: flex;
-    flex-wrap: nowrap;
   }
 
   #app {
-    /*display: flex;*/
-    /*display: grid;*/
-    /*!*grid-template-columns: 1fr 1fr;*!*/
-    /*!*padding: 0 2rem;*!*/
+    /*grid-template-columns: 1fr 1fr;*/
+    /*padding: 0 2rem;*/
   }
 
   header {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    justify-content: center;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
+  /*header .wrapper {*/
+  /*  display: flex;*/
+  /*  place-items: flex-start;*/
+  /*  flex-wrap: wrap;*/
+  /*}*/
   .logo {
     margin: 0 2rem 0 0;
   }
@@ -161,33 +192,53 @@ nav a:first-of-type {
   }
 }
 
-#select-box {
+
+main {
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
+  --default-font-size: 1.2rem;
+  font-size: var(--default-font-size);
+  text-align: center;
+  max-width: 720px;
 }
 
-
-#pet-info-box {
-  position: absolute;
+.animal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#img-cont {
+.img-container {
   width: 600px;
   height: 480px;
   display: flex;
   justify-content: center;
 }
 
-#pet-img {
-  max-height: 100%;
-  max-width: 100%;
+.pet-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
-#pet-button {
-
+.pet {
+  position: absolute;
+  transition: opacity 2s;
+  opacity: 0;
 }
 
-#pet-select {
-
+.pet-curr {
+  opacity: 100%;
 }
+
+.pet-action-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pet-button, .pet-select {
+  font-size: var(--default-font-size);
+}
+
 </style>
