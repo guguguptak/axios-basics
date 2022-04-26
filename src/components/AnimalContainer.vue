@@ -31,6 +31,7 @@ export default {
 .info-box {
   width: 100%;
   height: 4rem;
+  padding-top: 1rem;
 }
 
 .animal-img {

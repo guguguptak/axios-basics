@@ -98,12 +98,18 @@ main {
 }
 
 .action-box {
+  padding-bottom: 1.2rem;
+  padding-top: 1.2rem;
+  width: 98%;
   display: flex;
   justify-content: space-between;
 }
 
 .animal-button, .select {
   font-size: var(--default-font-size);
+  text-align: center;
+  border-radius: 3px;
+
 }
 
 </style>
