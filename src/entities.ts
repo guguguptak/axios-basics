@@ -1,4 +1,4 @@
-export class PetResponse {
+export class AnimalResponse {
     constructor(
         readonly image: string,
         readonly fact: string,
@@ -6,9 +6,9 @@ export class PetResponse {
     }
 }
 
-export class Pet {
+export class Animal {
     constructor(
-        readonly response: PetResponse,
+        readonly response: AnimalResponse,
         readonly name: string,
         public isCurrent: boolean,
     ) {

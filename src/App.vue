@@ -1,13 +1,13 @@
 <template>
-  <RandomPet />
+  <RandomAnimal />
   <!--  <RouterView />-->
 </template>
 
 <script>
-import RandomPet from './components/RandomPet.vue';
+import RandomAnimal from './components/RandomAnimal.vue';
 
 export default {
-  components: { RandomPet },
+  components: { RandomAnimal },
 };
 </script>
 
