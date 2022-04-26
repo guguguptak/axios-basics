@@ -1,13 +1,13 @@
 <template>
-  <RandomPetGenerator />
+  <RandomPet />
   <!--  <RouterView />-->
 </template>
 
 <script>
-import RandomPetGenerator from './components/RandomPetGenerator.vue';
+import RandomPet from './components/RandomPet.vue';
 
 export default {
-  components: { RandomPetGenerator },
+  components: { RandomPet },
 };
 </script>
 
@@ -17,7 +17,7 @@ export default {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   font-weight: normal;
 }
 
@@ -75,21 +75,11 @@ nav a:first-of-type {
     display: flex;
   }
 
-  #app {
-    /*grid-template-columns: 1fr 1fr;*/
-    /*padding: 0 2rem;*/
-  }
-
   header {
     display: flex;
     justify-content: center;
   }
 
-  /*header .wrapper {*/
-  /*  display: flex;*/
-  /*  place-items: flex-start;*/
-  /*  flex-wrap: wrap;*/
-  /*}*/
   .logo {
     margin: 0 2rem 0 0;
   }
