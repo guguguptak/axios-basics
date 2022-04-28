@@ -1,13 +1,17 @@
 <template>
-  <RandomAnimal />
+  <RandomAnimal :endpoints="endpoints" />
   <!--  <RouterView />-->
 </template>
 
 <script>
 import RandomAnimal from './components/RandomAnimal.vue';
+import { ANIMAL_ENDPOINTS } from '@/endpoints';
 
 export default {
   components: { RandomAnimal },
+  computed: {
+    endpoints: () => ANIMAL_ENDPOINTS,
+  },
 };
 </script>
 

@@ -7,11 +7,11 @@
       <div class="action-box">
         <select v-model="animalType" class="select select is-normal" @change="fetchAnimal">
           <!--      <option disabled value="">Please select one</option>-->
-          <option v-for="(_, name, i) in ANIMAL_ENDPOINTS" :key="i" :value="i">
+          <option v-for="(_, name, i) in endpoints" :key="i" :value="i">
             {{ name }}
           </option>
         </select>
-        <button class="animal-button button is-primary" @click="fetchAnimal">Another animal</button>
+        <button class="animal-button button is-primary is-light" @click="fetchAnimal">Another animal</button>
       </div>
       <div style=" width: 600px; height: 600px">
         <AnimalContainer :animal="animal1" />
@@ -27,15 +27,12 @@ import AnimalContainer from "@/components/AnimalContainer.vue";
 import {Animal, AnimalResponse} from "@/entities";
 
 
-const ANIMAL_ENDPOINTS = {
-  'fox': `https://some-random-api.ml/animal/fox`,
-  'racoon': `https://some-random-api.ml/animal/raccoon`,
-  'cat': `https://some-random-api.ml/animal/cat`
-}
-
 export default {
   components: {AnimalContainer},
   name: "RandomAnimalGenerator",
+  props: {
+    endpoints: Object,
+  },
   async created() {
     this.animal1 = new Animal(null, "", false);
     this.animal2 = new Animal(null, "", false);
@@ -49,15 +46,12 @@ export default {
       animalType: 0,
     };
   },
-  computed: {
-    ANIMAL_ENDPOINTS: () => ANIMAL_ENDPOINTS,
-  },
   methods: {
     async fetchAnimal() {
       try {
         const currImageUrl = (this.currAnimalIndex == 1) ? this.animal1.response?.image : this.animal2.response?.image;
         let resp;
-        const [AnimalName, AnimalUrl] = Object.entries(ANIMAL_ENDPOINTS)[this.animalType]
+        const [AnimalName, AnimalUrl] = Object.entries(this.endpoints)[this.animalType]
         do {
           resp = await axios.get<AnimalResponse>(AnimalUrl);
         } while (resp.data.image == currImageUrl);
@@ -109,7 +103,11 @@ main {
   font-size: var(--default-font-size);
   text-align: center;
   border-radius: 3px;
+}
 
+.select {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 </style>
