@@ -11,7 +11,7 @@
             {{ name }}
           </option>
         </select>
-        <button class="animal-button button is-primary is-light" @click="fetchAnimal">Another animal</button>
+        <button class="animal-button button is-primary is-light" @click="fetchAnimal">Next animal</button>
       </div>
       <div style=" width: 600px; height: 600px">
         <AnimalContainer :animal="animal1" />
